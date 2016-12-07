@@ -14,26 +14,24 @@
  *
  */
 
-import groovy.time.TimeCategory
-
 definition(
-    name: "Fan On Schedule",
-    namespace: "cestewart",
-    author: "Christopher Stewart",
-    description: "Turn a fan on every X minutes and run for Y minutes.",
-    category: "Convenience",
-    iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
-    iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
-    iconX3Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png")
+	name: "Fan On Schedule",
+	namespace: "cestewart",
+	author: "Christopher Stewart",
+	description: "Turn a fan on every X minutes and run for Y minutes.",
+	category: "Convenience",
+	iconUrl: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience.png",
+	iconX2Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png",
+	iconX3Url: "https://s3.amazonaws.com/smartapp-icons/Convenience/Cat-Convenience@2x.png")
 
 preferences {
 	section("Switch to control") {
-        input "theswitch", "capability.switch", title: "Switch", required: true
-    }
-    section("Settings") {
-        input name:"runEveryMinutes", type: "number", title: "How often shoud the fan run in minutes", required: true
-        input name:"runForMinutes", type: "number", title: "How long should the fan run in minutes", required: true
-    }
+		input "theswitch", "capability.switch", title: "Fan", required: true
+	}
+	section("Settings") {
+		input name:"runEveryMinutes", type: "number", title: "How often shoud the fan run in minutes", required: true
+		input name:"runForMinutes", type: "number", title: "How long should the fan run in minutes", required: true
+	}
 }
 
 def installed() {
@@ -49,23 +47,23 @@ def updated() {
 
 def initialize() {
 	subscribe(theswitch, "switch", switchHandler)
-    turnSwitchOn()
+	turnSwitchOn()
 }
 
 def switchHandler(evt) {
 	if (theswitch.currentValue("switch").equalsIgnoreCase("on")) {
-		log.debug "The switch will be turned off in ${runForMinutes} minutes."
+		log.debug "The fan will be turned off in ${runForMinutes} minutes."
 		runIn(60*runForMinutes, turnSwitchOff)
 	}
 }
 
 def turnSwitchOn() {
 	theswitch.on()
-	log.debug "The switch has been turned on"
+	log.debug "The fan has been turned on"
 	schedule(now() + runEveryMinutes * 60 * 1000, turnSwitchOn)
 }
 
 def turnSwitchOff() {
 	theswitch.off()
-	log.debug "The switch has been turned off"
+	log.debug "The fan has been turned off"
 }
